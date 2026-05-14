@@ -1,13 +1,15 @@
 // --- INITIALISERA SIMULERAD DATABAS ---
 const defaultChallenges = [
-    { id: "ch1", points: 1, text: "Sagt 'Kiitos' (tack) till en funktionär" },
-    { id: "ch2", points: 1, text: "Ätit en korv i arenarestaurangen" },
-    { id: "ch3", points: 2, text: "Köpt officiell Jukola-merch" },
-    { id: "ch5", points: 3, text: "Hejat fram en klubbkompis på upploppet" },
-    { id: "ch7", points: 5, text: "Badat finsk bastu" },
+    { id: "ch1", points: 1, text: "Basta efter din sträcka" },
+    { id: "ch2", points: 1, text: "Bjuda coach/ledare på en öl" },
+    { id: "ch3", points: 2, text: "Beställa mat eller dryck på finska" },
+    { id: "ch3", points: 2, text: "Taktik-spy för att kunna dricka mer" },
+    { id: "ch5", points: 3, text: "Svepa en öl direkt efter målgång" },
+    { id: "ch7", points: 5, text: "Köpa en Lakka och lyckas få i sig hela själv" },
     { id: "ch10", points: 10, text: "Hållit dig vaken genom HELA herrkavlen" },
-    { id: "m1", points: -1, text: "Gick fel i tältområdet" },
-    { id: "m3", points: -5, text: "Bommat en kontroll med mer än 10 minuter" }
+    { id: "m1", points: -1, text: "Ha med sig stövlar, paraply eller stol" },
+    { id: "m3", points: -5, text: "Bommat en kontroll med mer än 10 minuter" },
+    { id: "m3", points: -10, text: "Missa båten hem" },
 ];
 
 let db_users = JSON.parse(localStorage.getItem("db_users")) || [];
