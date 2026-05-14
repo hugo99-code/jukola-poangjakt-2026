@@ -14,8 +14,8 @@ const defaultChallenges = [
 
 let db_users = JSON.parse(localStorage.getItem("db_users")) || [];
 let db_challenges = JSON.parse(localStorage.getItem("db_challenges")) || defaultChallenges;
-if (!localStorage.getItem("db_challenges")) {
-    localStorage.setItem("db_challenges", JSON.stringify(db_challenges));
+if (!localStorage.getItem("db_challenges_v2")) {
+    localStorage.setItem("db_challenges_v2", JSON.stringify(db_challenges));
 }
 
 let currentUser = JSON.parse(localStorage.getItem("current_session")) || null;
