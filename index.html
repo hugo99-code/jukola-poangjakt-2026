@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jukola Poängjakt 2026</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <section id="login-view" class="view">
+        <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img"> <div class="login-card">
+            <h1>Jukolaspelet 2026 </h1>
+            <h2>Logga in eller Skapa konto</h2>
+            <div class="input-group">
+                <input type="text" id="username-input" placeholder="Ditt namn / Användarnamn">
+                <input type="password" id="password-input" placeholder="Välj ett lösenord">
+            </div>
+            <button onclick="handleAuth('login')">Logga in</button>
+            <button onclick="handleAuth('register')" class="btn-secondary">Skapa nytt konto</button>
+            
+            <button onclick="switchView('reset-view')" class="btn-link">Glömt eller vill byta lösenord?</button>
+            
+            <p id="login-error" class="error-text"></p>
+        </div>
+    </section>
+
+    <section id="reset-view" class="view hidden">
+        <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img"> <div class="login-card">
+            <h1>Byt Lösenord </h1>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Skriv in ditt exakta användarnamn och ditt nya önskade lösenord.</p>
+            <div class="input-group">
+                <input type="text" id="reset-username-input" placeholder="Ditt användarnamn">
+                <input type="password" id="reset-password-input" placeholder="Skriv ditt NYA lösenord">
+            </div>
+            <button onclick="handleSelfReset()">Spara nytt lösenord</button>
+            <button onclick="switchView('login-view')" class="btn-secondary">Tillbaka</button>
+            <p id="reset-message" class="error-text"></p>
+        </div>
+    </section>
+
+    <section id="game-view" class="view hidden">
+        <header>
+            <div class="header-left">
+                <h1>Jukolaspelet 2026 </h1>
+                <p id="welcome-text">Laddar löpare...</p>
+                <button onclick="logout()" class="btn-link-white">Logga ut</button>
+            </div>
+            
+            <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img">
+            
+            <button id="admin-nav-btn" class="btn-admin-nav hidden" onclick="switchView('admin-view')">⚙️ Adminpanelen</button>
+        </header>
+
+        <main>
+            <section id="challenges-section">
+                <h2>Utmaningar</h2>
+                <div id="accordion-container"></div>
+            </section>
+
+            <section id="leaderboard-section">
+                <h2>Topplista Live</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plats</th>
+                                <th>Namn</th>
+                                <th>Poäng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </section>
+
+    <section id="admin-view" class="view hidden">
+        <header>
+            <div class="header-left">
+                <h1>Adminpanelen ⚙️</h1>
+                <button onclick="switchView('game-view')" class="btn-link-white">◀ Tillbaka till spelet</button>
+            </div>
+            <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img">
+        </header>
+
+        <main>
+            <section class="admin-card">
+                <h3>Skapa ny utmaning på språng</h3>
+                <div class="input-group">
+                    <input type="text" id="new-ch-text" placeholder="Vad är utmaningen?">
+                    <select id="new-ch-points">
+                        <option value="1">1 Poäng</option>
+                        <option value="2">2 Poäng</option>
+                        <option value="3">3 Poäng</option>
+                        <option value="5">5 Poäng</option>
+                        <option value="10">10 Poäng</option>
+                        <option value="-1">-1 Poäng</option>
+                        <option value="-2">-2 Poäng</option>
+                        <option value="-3">-3 Poäng</option>
+                        <option value="-5">-5 Poäng</option>
+                        <option value="-10">-10 Poäng</option>
+                    </select>
+                </div>
+                <button onclick="addChallengeFromAdmin()">Lägg till utmaning</button>
+            </section>
+
+            <section class="admin-card">
+                <h3>Registrerade Löpare</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Namn</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>

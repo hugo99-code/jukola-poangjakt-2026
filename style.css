@@ -1,0 +1,312 @@
+:root {
+    /* --- OK Södertörns Klubb- och Högkontrastfärger --- */
+    --bg-color: #f4f6f9;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    
+    /* Teal-grön: Huvudfärg (knappar, aktiva menyer) */
+    --primary-color: #00795D; 
+    
+    /* Mörkblå: Sekundärfärg (header-bakgrund) */
+    --secondary-color: #005192; 
+    
+    /* Klarröd: Högkontrast (minuspoäng, felmeddelanden, avbryt) */
+    --highlight-color: #E50044; 
+    
+    --border-radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 15px;
+    padding-bottom: 40px;
+}
+
+/* --- SYSTEM FÖR ATT VISA/DÖLJA SIDOR (HÄR VAR FELET) --- */
+.view {
+    display: block;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.hidden {
+    display: none !important;
+}
+
+/* --- LOGGINLOGGNING & ADMIN-KORT --- */
+#login-view {
+    padding-top: 50px;
+}
+.login-card, .admin-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 20px;
+}
+.login-card h2 { 
+    margin-bottom: 20px; 
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+}
+
+/* --- UTFORMNING AV INPUTS & VAL --- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+input[type="text"], input[type="password"], select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fff;
+}
+
+/* --- ALLA KNAPPAR (FÄRGANPASSADE) --- */
+button {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-color); /* Grön */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s ease;
+}
+button:active {
+    opacity: 0.9;
+}
+.btn-secondary { 
+    background: var(--secondary-color); /* Blå */
+}
+.btn-small { 
+    width: auto; 
+    padding: 8px 14px; 
+    font-size: 0.85rem; 
+    margin: 0; 
+}
+.btn-danger { 
+    background: var(--highlight-color); /* Klarröd */
+    width: auto; 
+    padding: 6px 12px; 
+    font-size: 0.85rem; 
+    margin: 0;
+}
+.btn-link { 
+    background: none; 
+    color: #666; 
+    font-size: 0.85rem; 
+    text-decoration: underline; 
+    width: auto; 
+    padding: 0; 
+    margin-top: 10px;
+}
+.error-text { 
+    color: var(--highlight-color); 
+    font-size: 0.9rem; 
+    margin-top: 10px; 
+    font-weight: bold;
+}
+
+/* --- UPPDATERAD HEADER (LOGGA TILL HÖGER) --- */
+header {
+    background: var(--secondary-color); /* Din mörkblå */
+    color: white;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    
+    /* Denna magi trycker texten till vänster och loggan till höger */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Gör att adminknappen kan hoppa ner på en egen rad under */
+    gap: 10px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+header h1 {
+    font-size: 1.4rem;
+}
+
+.logo-img {
+    height: 100px; /* Din önskade större storlek */
+    width: auto;
+    flex-shrink: 0;
+}
+
+#welcome-text {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* --- STYLING FÖR DEN FLYTTADE ADMINKNAPPEN --- */
+.btn-admin-nav {
+    width: 100%; /* Tar upp hela bredden i botten av headern */
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.15); /* Snygg, halvtransparent vit */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.btn-admin-nav:active {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Vita länkar för utloggning och tillbaka-knapp som syns bra mot det blåa */
+.btn-link-white {
+    background: none;
+    color: white;
+    font-size: 0.85rem;
+    text-decoration: underline;
+    width: auto;
+    padding: 0;
+    margin-top: 5px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* --- ACCORDION / UTFELLBARA MENYER --- */
+details {
+    background: var(--card-bg);
+    margin-bottom: 10px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+summary {
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+details[open] summary {
+    border-bottom: 1px solid #eee;
+    color: var(--primary-color);
+}
+summary::after {
+    content: '▶';
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+    color: #999;
+}
+details[open] summary::after {
+    transform: rotate(90deg);
+    color: var(--primary-color);
+}
+
+/* UTMANINGSLISTOR */
+.challenge-list {
+    padding: 5px 0;
+}
+.challenge-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f9f9f9;
+}
+.challenge-item:last-child {
+    border-bottom: none;
+}
+.challenge-item label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 16px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+.challenge-item input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+    accent-color: var(--primary-color);
+    flex-shrink: 0;
+}
+.challenge-item input[type="checkbox"]:checked + span {
+    color: #888;
+    text-decoration: line-through;
+}
+
+/* --- TOPPLISTA TABELL --- */
+.table-container {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+th, td {
+    padding: 12px 10px;
+    font-size: 0.95rem;
+}
+th {
+    border-bottom: 2px solid #eee;
+    color: #666;
+    font-weight: 600;
+}
+tr {
+    border-bottom: 1px solid #eee;
+}
+tr:last-child {
+    border-bottom: none;
+}
+tr:nth-child(even) {
+    background-color: #fafafa;
+}
+tr:nth-child(1) td:first-child { color: #af8b15; font-weight: bold; }
+tr:nth-child(2) td:first-child { color: #878787; font-weight: bold; }
+tr:nth-child(3) td:first-child { color: #cd7f32; font-weight: bold; }
+
+/* --- SPECIFIK STYLING FÖR MINUSPOÄNG --- */
+details.minus-accordion[open] summary {
+    color: var(--highlight-color);
+}
+details.minus-accordion summary::after {
+    color: var(--highlight-color);
+}
+.minus-badge {
+    color: var(--highlight-color);
+    font-weight: bold;
+    margin-right: 5px;
+}
+.minus-accordion .challenge-item input[type="checkbox"]:checked + span {
+    color: #b00034;
+    text-decoration: line-through;
+}

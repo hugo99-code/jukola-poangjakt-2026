@@ -1,0 +1,16 @@
+{
+  "short_name": "Jukola2026",
+  "name": "OK Södertörn Jukola Poängjakt",
+  "icons": [
+    {
+      "src": "image_0.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#005192",
+  "theme_color": "#005192",
+  "display": "standalone",
+  "orientation": "portrait"
+}
