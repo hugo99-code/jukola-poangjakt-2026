@@ -297,3 +297,15 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.log('Service Worker felade:', err));
     });
 }
+
+// --- KRISVERKTYG: FABRIKSÅTERSTÄLLNING ---
+function resetWholeApp() {
+    const safeCheck = confirm(
+        "ÄR DU SÄKER?"
+    );
+    
+    if (safeCheck) {
+        localStorage.clear(); // Tömmer ALLT lokalt minne stenhårt
+        location.reload();    // Laddar om sidan så att appen startar om helt ren
+    }
+}
