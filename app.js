@@ -39,7 +39,7 @@ function switchView(viewId) {
     document.getElementById(viewId).classList.remove('hidden');
     
     if (viewId === "game-view") {
-        renderAllAccordions();
+        renderAllAccordions(false); // FALSE = Starta alltid med STÄNGDA menyer vid sidbyte/inloggning
         renderLeaderboard();
     } else if (viewId === "admin-view") {
         renderAdminUsers();
@@ -139,17 +139,21 @@ function logout() {
     switchView("login-view");
 }
 
-// --- RENDERA UTMANINGAR (MED MINNE FÖR ÖPPNA MENYER) ---
-function renderAllAccordions() {
+// Lägg till (keepOpen = false) på raden nedanför:
+function renderAllAccordions(keepOpen = false) {
     const container = document.getElementById("accordion-container");
 
-    // 1. SPARA VILKA MENYER SOM ÄR ÖPPNA JUST NU INNAN VI TÖMMER
+    // Spara bara öppna menyer om keepOpen är sant (vilket det är när man klickar på en checkbox)
     const openTiers = [];
-    container.querySelectorAll("details[open]").forEach(details => {
-        openTiers.push(details.getAttribute("data-tier"));
-    });
+    if (keepOpen) {
+        container.querySelectorAll("details[open]").forEach(details => {
+            openTiers.push(details.getAttribute("data-tier"));
+        });
+    }
 
     container.innerHTML = "";
+
+    // ... (Hela resten av renderAllAccordions-funktionen förblir exakt likadan som innan)
 
     // --- 2. POSITIVA MENYER ---
     positiveTiers.forEach(tier => {
@@ -262,7 +266,6 @@ function itemHtml(ch, isChecked, parentContainer, showPoints = false) {
     parentContainer.appendChild(itemDiv);
 }
 
-// --- SPEL-LOGIK ---
 function toggleChallenge(id) {
     if (currentUser.completed.includes(id)) {
         currentUser.completed = currentUser.completed.filter(chId => chId !== id);
@@ -275,8 +278,7 @@ function toggleChallenge(id) {
     
     saveDB();
     
-    // Eftersom en ändring här påverkar vad andra ser (låsningar), ritar vi om menyerna direkt
-    renderAllAccordions();
+    renderAllAccordions(true); // TRUE = Behåll menyn öppen när man klickar i en ruta!
     renderLeaderboard();
 }
 
