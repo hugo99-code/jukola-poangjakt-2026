@@ -7,15 +7,17 @@ const defaultChallenges = [
     { id: "ch5", points: 3, text: "Svepa en öl direkt efter målgång" },
     { id: "ch6", points: 5, text: "Köpa en Lakka och lyckas få i sig hela själv" },
     { id: "ch7", points: 10, text: "Hållit dig vaken genom HELA herrkavlen" },
+    { id: "f1", points: 3, text: "Fråga busschauffören om en pissi-pausi", isFirst: true },
+    { id: "f2", points: 5, text: "Genomför en godkänd shotgun (filmbevis krävs)", isFirst: true },
     { id: "m1", points: -1, text: "Ha med sig stövlar, paraply eller stol" },
     { id: "m2", points: -5, text: "Bommat en kontroll med mer än 10 minuter" },
     { id: "m3", points: -10, text: "Missa båten hem" },
 ];
 
 let db_users = JSON.parse(localStorage.getItem("db_users")) || [];
-let db_challenges = JSON.parse(localStorage.getItem("db_challenges")) || defaultChallenges;
-if (!localStorage.getItem("db_challenges_v2")) {
-    localStorage.setItem("db_challenges_v2", JSON.stringify(db_challenges));
+let db_challenges = JSON.parse(localStorage.getItem("db_challenges_v3")) || defaultChallenges;
+if (!localStorage.getItem("db_challenges_v3")) {
+    localStorage.setItem("db_challenges_v3", JSON.stringify(db_challenges));
 }
 
 let currentUser = JSON.parse(localStorage.getItem("current_session")) || null;
@@ -84,36 +86,29 @@ function handleAuth(type) {
     }
 }
 
-// --- NY FUNKTION: ÅTERSTÄLL LÖSENORD (SJÄLVSERVICE) ---
 function handleSelfReset() {
     const usernameIn = document.getElementById("reset-username-input").value.trim();
     const newPasswordIn = document.getElementById("reset-password-input").value.trim();
     const messageText = document.getElementById("reset-message");
 
     if (!usernameIn || !newPasswordIn) {
-        messageText.style.color = "#e74c3c";
         messageText.innerText = "Fyll i både användarnamn och nytt lösenord!";
         return;
     }
 
-    // Leta efter användaren (gör det okänsligt för stora/små bokstäver)
     const userIndex = db_users.findIndex(u => u.username.toLowerCase() === usernameIn.toLowerCase());
 
     if (userIndex === -1) {
-        messageText.style.color = "#e74c3c";
         messageText.innerText = `Hittade ingen löpare med namnet "${usernameIn}"`;
         return;
     }
 
-    // Uppdatera lösenordet i databasen
     db_users[userIndex].password = newPasswordIn;
     saveDB();
 
-    // Visa succé-meddelande
     messageText.style.color = "#2ecc71";
     messageText.innerText = "Lösenordet har uppdaterats framgångsrikt!";
 
-    // Vänta 1.5 sekund och hoppa sedan tillbaka till inloggningen
     setTimeout(() => {
         document.getElementById("reset-username-input").value = "";
         document.getElementById("reset-password-input").value = "";
@@ -149,9 +144,9 @@ function renderAllAccordions() {
     const container = document.getElementById("accordion-container");
     container.innerHTML = "";
 
-    // Plus-menyer
+    // --- 1. POSITIVA MENYER (Ignorerar först till kvarn) ---
     positiveTiers.forEach(tier => {
-        const tierChallenges = db_challenges.filter(ch => ch.points === tier);
+        const tierChallenges = db_challenges.filter(ch => ch.points === tier && !ch.isFirst);
         if (tierChallenges.length === 0) return;
 
         const details = document.createElement("details");
@@ -171,8 +166,55 @@ function renderAllAccordions() {
         container.appendChild(details);
     });
 
-    // Minus-meny
-    const minusChallenges = db_challenges.filter(ch => ch.points < 0);
+    // --- 2. SPECIALMENY: FÖRST TILL KVARN! 🏆 ---
+    const firstChallenges = db_challenges.filter(ch => ch.isFirst === true);
+    if (firstChallenges.length > 0) {
+        const details = document.createElement("details");
+        details.className = "first-accordion";
+        
+        const summary = document.createElement("summary");
+        summary.innerHTML = `<span>Först till kvarn! 🏆</span>`;
+        details.appendChild(summary);
+
+        const listDiv = document.createElement("div");
+        listDiv.className = "challenge-list";
+
+        firstChallenges.forEach(ch => {
+            // Kolla om NÅGON i hela databasen har klarat denna utmaning
+            const takenByUser = db_users.find(u => u.completed.includes(ch.id));
+            
+            let isChecked = "";
+            let isDisabled = "";
+            let statusText = ` [${ch.points}p]`;
+            let isTakenByOther = false;
+
+            if (takenByUser) {
+                if (takenByUser.username === currentUser.username) {
+                    isChecked = "checked"; // Det är jag som har tagit den!
+                } else {
+                    isDisabled = "disabled"; // Någon annan tog den, lås boxen!
+                    statusText = ` ❌ [Tagen av ${takenByUser.username}]`;
+                    isTakenByOther = true;
+                }
+            }
+
+            const itemDiv = document.createElement("div");
+            itemDiv.className = `challenge-item ${isTakenByOther ? 'taken' : ''}`;
+            itemDiv.innerHTML = `
+                <label>
+                    <input type="checkbox" ${isChecked} ${isDisabled} onchange="toggleChallenge('${ch.id}')">
+                    <span><strong class="points-label">${statusText}</strong> ${ch.text}</span>
+                </label>
+            `;
+            listDiv.appendChild(itemDiv);
+        });
+
+        details.appendChild(listDiv);
+        container.appendChild(details);
+    }
+
+    // --- 3. MINUS-MENY ---
+    const minusChallenges = db_challenges.filter(ch => ch.points < 0 && !ch.isFirst);
     if (minusChallenges.length > 0) {
         minusChallenges.sort((a, b) => b.points - a.points);
         const details = document.createElement("details");
@@ -218,16 +260,18 @@ function toggleChallenge(id) {
     db_users[userIndex].completed = currentUser.completed;
     
     saveDB();
+    
+    // Eftersom en ändring här påverkar vad andra ser (låsningar), ritar vi om menyerna direkt
+    renderAllAccordions();
     renderLeaderboard();
 }
 
-// --- UPPDATERAD TOPPLISTA (FILTRERAR BORT ADMIN) ---
 function renderLeaderboard() {
     const board = document.getElementById("leaderboard-body");
     board.innerHTML = "";
 
     const scoreboard = db_users
-        .filter(user => !user.isAdmin) // HÄR PLOCKAR VI BORT ADMIN FRÅN TOPPLISTAN!
+        .filter(user => !user.isAdmin)
         .map(user => {
             let score = 0;
             db_challenges.forEach(ch => {
@@ -265,7 +309,7 @@ function addChallengeFromAdmin() {
     };
 
     db_challenges.push(newCh);
-    localStorage.setItem("db_challenges", JSON.stringify(db_challenges));
+    localStorage.setItem("db_challenges_v3", JSON.stringify(db_challenges));
     
     document.getElementById("new-ch-text").value = "";
     alert("Utmaning tillagd!");
@@ -289,23 +333,10 @@ function saveDB() {
     localStorage.setItem("db_users", JSON.stringify(db_users));
 }
 
-// Aktivera PWA-funktionen
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Service Worker registrerad!', reg))
-            .catch(err => console.log('Service Worker felade:', err));
-    });
-}
-
-// --- KRISVERKTYG: FABRIKSÅTERSTÄLLNING ---
 function resetWholeApp() {
-    const safeCheck = confirm(
-        "ÄR DU SÄKER?"
-    );
-    
+    const safeCheck = confirm("ÄR DU HELT SÄKER?\n\nDetta kommer att radera ALLA registrerade löpare, nollställa alla poäng och återställa appen till källkoden i VS Code. Detta går inte att ångra!");
     if (safeCheck) {
-        localStorage.clear(); // Tömmer ALLT lokalt minne stenhårt
-        location.reload();    // Laddar om sidan så att appen startar om helt ren
+        localStorage.clear();
+        location.reload();
     }
 }

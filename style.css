@@ -310,3 +310,31 @@ details.minus-accordion summary::after {
     color: #b00034;
     text-decoration: line-through;
 }
+
+/* --- STYLING FÖR FÖRST TILL KVARN --- */
+details.first-accordion[open] summary {
+    color: #d4af37; /* Guld/Gul färg för utmärkelse */
+}
+
+details.first-accordion summary::after {
+    color: #d4af37;
+}
+
+/* När en utmaning är tagen av någon annan */
+.challenge-item.taken {
+    background-color: #eaeaea;
+    opacity: 0.6;
+}
+
+.challenge-item.taken label {
+    cursor: not-allowed; /* Visar ett "förbjudet"-tecken med muspekaren */
+}
+
+.challenge-item.taken span {
+    text-decoration: line-through;
+    color: #777;
+}
+
+.challenge-item.taken .points-label {
+    color: var(--highlight-color); /* Gör "[Tagen av X]" röd och tydlig */
+}
