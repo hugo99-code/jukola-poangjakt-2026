@@ -139,17 +139,27 @@ function logout() {
     switchView("login-view");
 }
 
-// --- RENDERA UTMANINGAR (ACCORDIONS) ---
+// --- RENDERA UTMANINGAR (MED MINNE FÖR ÖPPNA MENYER) ---
 function renderAllAccordions() {
     const container = document.getElementById("accordion-container");
+
+    // 1. SPARA VILKA MENYER SOM ÄR ÖPPNA JUST NU INNAN VI TÖMMER
+    const openTiers = [];
+    container.querySelectorAll("details[open]").forEach(details => {
+        openTiers.push(details.getAttribute("data-tier"));
+    });
+
     container.innerHTML = "";
 
-    // --- 1. POSITIVA MENYER (Ignorerar först till kvarn) ---
+    // --- 2. POSITIVA MENYER ---
     positiveTiers.forEach(tier => {
         const tierChallenges = db_challenges.filter(ch => ch.points === tier && !ch.isFirst);
         if (tierChallenges.length === 0) return;
 
         const details = document.createElement("details");
+        details.setAttribute("data-tier", tier); // Sätt en etikett
+        if (openTiers.includes(String(tier))) details.open = true; // Öppna om den var öppen innan!
+
         const summary = document.createElement("summary");
         summary.innerHTML = `<span>${tier} Poäng</span>`;
         details.appendChild(summary);
@@ -166,21 +176,22 @@ function renderAllAccordions() {
         container.appendChild(details);
     });
 
-    // --- 2. SPECIALMENY: FÖRST TILL KVARN! 🏆 ---
+    // --- 3. SPECIALMENY: FÖRST TILL KVARN!  ---
     const firstChallenges = db_challenges.filter(ch => ch.isFirst === true);
     if (firstChallenges.length > 0) {
         const details = document.createElement("details");
         details.className = "first-accordion";
+        details.setAttribute("data-tier", "first"); // Sätt en etikett
+        if (openTiers.includes("first")) details.open = true; // Öppna om den var öppen innan!
         
         const summary = document.createElement("summary");
-        summary.innerHTML = `<span>Först till kvarn! 🏆</span>`;
+        summary.innerHTML = `<span>Först till kvarn! </span>`;
         details.appendChild(summary);
 
         const listDiv = document.createElement("div");
         listDiv.className = "challenge-list";
 
         firstChallenges.forEach(ch => {
-            // Kolla om NÅGON i hela databasen har klarat denna utmaning
             const takenByUser = db_users.find(u => u.completed.includes(ch.id));
             
             let isChecked = "";
@@ -190,9 +201,9 @@ function renderAllAccordions() {
 
             if (takenByUser) {
                 if (takenByUser.username === currentUser.username) {
-                    isChecked = "checked"; // Det är jag som har tagit den!
+                    isChecked = "checked";
                 } else {
-                    isDisabled = "disabled"; // Någon annan tog den, lås boxen!
+                    isDisabled = "disabled";
                     statusText = ` ❌ [Tagen av ${takenByUser.username}]`;
                     isTakenByOther = true;
                 }
@@ -213,12 +224,15 @@ function renderAllAccordions() {
         container.appendChild(details);
     }
 
-    // --- 3. MINUS-MENY ---
+    // --- 4. MINUS-MENY ---
     const minusChallenges = db_challenges.filter(ch => ch.points < 0 && !ch.isFirst);
     if (minusChallenges.length > 0) {
         minusChallenges.sort((a, b) => b.points - a.points);
         const details = document.createElement("details");
         details.className = "minus-accordion";
+        details.setAttribute("data-tier", "minus"); // Sätt en etikett
+        if (openTiers.includes("minus")) details.open = true; // Öppna om den var öppen innan!
+
         const summary = document.createElement("summary");
         summary.innerHTML = `<span>Minuspoäng ⚠️</span>`;
         details.appendChild(summary);
