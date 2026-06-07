@@ -422,10 +422,16 @@ function renderAdminUsers() {
     board.innerHTML = "";
 
     db_users.forEach(user => {
+        // Vi vill inte att admin ska kunna radera sig själv av misstag
+        const deleteButton = user.isAdmin 
+            ? "" 
+            : `<button class="btn-danger" onclick="deleteUser('${user.username}')" style="padding: 2px 8px; font-size: 0.8rem; margin: 0;">Radera</button>`;
+
         board.innerHTML += `
             <tr>
                 <td>${user.username}</td>
                 <td><span style="color: ${user.isAdmin ? '#e67e22' : '#2ecc71'}; font-weight: bold;">${user.isAdmin ? 'Admin' : 'Tävlande'}</span></td>
+                <td style="text-align: center;">${deleteButton}</td>
             </tr>
         `;
     });
@@ -433,6 +439,23 @@ function renderAdminUsers() {
 
 function saveDB() {
     localStorage.setItem("db_users", JSON.stringify(db_users));
+}
+
+// --- ADMINVERKTYG: RADERA EN ENSTAKA ANVÄNDARE ---
+function deleteUser(username) {
+    const safeCheck = confirm(`Är du helt säker på att du vill radera löparen "${username}" och alla deras poäng?`);
+    
+    if (safeCheck) {
+        // Filtrera bort användaren från listan
+        db_users = db_users.filter(user => user.username !== username);
+        
+        // Spara den nya listan i minnet
+        saveDB();
+        
+        // Rita om adminlistan och tabellen direkt så det syns
+        renderAdminUsers();
+        renderLeaderboard();
+    }
 }
 
 function resetWholeApp() {
