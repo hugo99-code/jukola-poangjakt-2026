@@ -75,7 +75,7 @@ const defaultChallenges = [
     // --- 10 POÄNG ---
     { id: "ch69", points: 10, text: "Bada i finska viken" },
     { id: "ch70", points: 10, text: "Bli intervjuad av lokalmedia" },
-    { id: "ch71", points: 10, text: "Ha een halvtom plastkasse som enda packning" },
+    { id: "ch71", points: 10, text: "Ha en halvtom plastkasse som enda packning" },
     { id: "ch72", points: 10, text: "Sov under bar himmel på TC utan sovsäck" },
     { id: "ch73", points: 10, text: "Spring din sträcka med 2 olika skor" },
     { id: "ch74", points: 10, text: "Streaka på TC (ögonvittne behövs)" },
@@ -275,7 +275,7 @@ function renderAllAccordions(keepOpen = false) {
         if (openTiers.includes("first")) details.open = true; // Öppna om den var öppen innan!
         
         const summary = document.createElement("summary");
-        summary.innerHTML = `<span>Först till kvarn! </span>`;
+        summary.innerHTML = `<span>Först till kvarn </span>`;
         details.appendChild(summary);
 
         const listDiv = document.createElement("div");
@@ -324,7 +324,7 @@ function renderAllAccordions(keepOpen = false) {
         if (openTiers.includes("minus")) details.open = true; // Öppna om den var öppen innan!
 
         const summary = document.createElement("summary");
-        summary.innerHTML = `<span>Minuspoäng ⚠️</span>`;
+        summary.innerHTML = `<span>Minuspoäng </span>`;
         details.appendChild(summary);
 
         const listDiv = document.createElement("div");
