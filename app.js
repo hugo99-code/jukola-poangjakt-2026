@@ -1,3 +1,36 @@
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBU3nCXEjnHGU-gl76NUEHyXeqG-gwRrgc",
+    authDomain: "jukola-poangjakt-2026.firebaseapp.com",
+    databaseURL: "https://jukola-poangjakt-2026-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "jukola-poangjakt-2026",
+    storageBucket: "jukola-poangjakt-2026.firebasestorage.app",
+    messagingSenderId: "106416764516",
+    appId: "1:106416764516:web:45cc663051ba6431029171"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// 3. Lyssna på databasen i REALTIID (Ersätt din gamla init/load-kod med detta)
+// Denna funktion triggas AUTOMATISKT så fort någon ändrar något i databasen!
+database.ref('jukola_data').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data && data.users) {
+        db_users = data.users; // Uppdatera den lokala listan med molndatan
+        
+        // Rita om allt på skärmen i realtid för användaren
+        renderLeaderboard();
+        if (typeof currentUser !== 'undefined' && currentUser) {
+            // Om användaren är inloggad, uppdatera deras vy och kryssrutor
+            renderChallenges(); 
+        }
+        if (document.getElementById("admin-view").style.display === "block") {
+            renderAdminUsers();
+        }
+    }
+});
+
 // --- INITIALISERA SIMULERAD DATABAS ---
 const defaultChallenges = [
     // --- 1 POÄNG ---
@@ -477,7 +510,10 @@ function renderAdminUsers() {
 }
 
 function saveDB() {
-    localStorage.setItem("db_users", JSON.stringify(db_users));
+    // Sparar hela användarlistan till Firebase i mappen 'jukola_data'
+    database.ref('jukola_data').set({
+        users: db_users
+    });
 }
 
 // --- ADMINVERKTYG: RADERA EN ENSTAKA ANVÄNDARE ---
