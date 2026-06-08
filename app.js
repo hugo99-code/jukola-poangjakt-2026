@@ -14,21 +14,24 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // 3. Lyssna på databasen i REALTIID
-// Denna funktion triggas AUTOMATISKT så fort någon ändrar något i databasen!
 database.ref('jukola_data').on('value', (snapshot) => {
     const data = snapshot.val();
+    
     if (data && data.users) {
-        db_users = data.users; // Uppdatera den lokala listan med molndatan
-        
-        // Rita om allt på skärmen i realtid för användaren
-        renderLeaderboard();
-        if (typeof currentUser !== 'undefined' && currentUser) {
-            // Om användaren är inloggad, uppdatera deras vy och kryssrutor
-            renderChallenges(); 
-        }
-        if (document.getElementById("admin-view").style.display === "block") {
-            renderAdminUsers();
-        }
+        db_users = data.users; // Om det finns användare i molnet, hämta dem
+    } else {
+        // OM DATABASEN ÄR TOM: Sätt listan som tom så att appen kan 
+        // ladda in dina "defaultChallenges" som vanligt från källkoden!
+        db_users = []; 
+    }
+    
+    // Rita om skärmen
+    renderLeaderboard();
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        renderChallenges(); 
+    }
+    if (document.getElementById("admin-view") && document.getElementById("admin-view").style.display === "block") {
+        renderAdminUsers();
     }
 });
 
