@@ -18,18 +18,29 @@ database.ref('jukola_data').on('value', (snapshot) => {
     const data = snapshot.val();
     
     if (data && data.users) {
-        db_users = data.users; // Om det finns användare i molnet, hämta dem
+        db_users = data.users; // Hämta användarna från molnet
     } else {
-        // OM DATABASEN ÄR TOM: Sätt listan som tom så att appen kan 
-        // ladda in dina "defaultChallenges" som vanligt från källkoden!
         db_users = []; 
     }
     
-    // Rita om skärmen
-    renderLeaderboard();
+    // --- LÖSNINGEN: Säkerställ att appen vet vem som är inloggad ---
+    // Om du har en global variabel som sparar den inloggade användaren (t.ex. currentUser)
     if (typeof currentUser !== 'undefined' && currentUser) {
+        // Hitta den uppdaterade versionen av den inloggade användaren från molndatan
+        const updatedMe = db_users.find(u => u.username === currentUser.username);
+        if (updatedMe) {
+            currentUser = updatedMe; // Synka dina lokala kryssboxar med molnet
+        }
+    }
+
+    // Rita om skärmen i exakt denna ordning
+    renderLeaderboard();
+    
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        // Tvinga appen att rita ut utmaningarna baserat på din fasta defaultChallenges-lista
         renderChallenges(); 
     }
+    
     if (document.getElementById("admin-view") && document.getElementById("admin-view").style.display === "block") {
         renderAdminUsers();
     }
