@@ -496,11 +496,3 @@ function deleteUser(username) {
         renderLeaderboard();
     }
 }
-
-function resetWholeApp() {
-    const safeCheck = confirm("ÄR DU HELT SÄKER?\n\nDetta kommer att radera ALLA registrerade löpare, nollställa alla poäng och återställa appen till källkoden i VS Code. Detta går inte att ångra!");
-    if (safeCheck) {
-        localStorage.clear();
-        location.reload();
-    }
-}
