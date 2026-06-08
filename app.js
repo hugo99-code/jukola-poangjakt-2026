@@ -9,10 +9,11 @@ const firebaseConfig = {
     appId: "1:106416764516:web:45cc663051ba6431029171"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// --- KORREKT INITIERING FÖR COMPAT-SKRIPTEN ---
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-// 3. Lyssna på databasen i REALTIID (Ersätt din gamla init/load-kod med detta)
+// 3. Lyssna på databasen i REALTIID
 // Denna funktion triggas AUTOMATISKT så fort någon ändrar något i databasen!
 database.ref('jukola_data').on('value', (snapshot) => {
     const data = snapshot.val();
