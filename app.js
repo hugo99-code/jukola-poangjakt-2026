@@ -106,7 +106,7 @@ const defaultChallenges = [
     { id: "tio9", points: 10, text: "Ta in tid på täten" },
     { id: "tio10", points: 10, text: "Bli intervjuad av speakern" },
     // --- FÖRST TILL KVARN!  (Använder f-prefix och isFirst: true) ---
-    { id: "f1", points: 1, text: "Ta en selfie med en gammal lagkamrat", isFirst: true },
+    { id: "f1", points: 1, text: "Ta en selfie med en föredetta lagkamrat", isFirst: true },
     { id: "f2", points: 1, text: "Nå 10 poäng", isFirst: true },
     { id: "f3", points: 1, text: "Samla på dig minst 3 minuspoäng", isFirst: true },
     { id: "f4", points: 2, text: "Övertyga busschauffören om en pissi-pausi", isFirst: true },
