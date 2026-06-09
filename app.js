@@ -1,48 +1,3 @@
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBU3nCXEjnHGU-gl76NUEHyXeqG-gwRrgc",
-    authDomain: "jukola-poangjakt-2026.firebaseapp.com",
-    databaseURL: "https://jukola-poangjakt-2026-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "jukola-poangjakt-2026",
-    storageBucket: "jukola-poangjakt-2026.firebasestorage.app",
-    messagingSenderId: "106416764516",
-    appId: "1:106416764516:web:45cc663051ba6431029171"
-};
-
-// --- KORREKT INITIERING FÖR COMPAT-SKRIPTEN ---
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-
-// 3. Lyssna på databasen i REALTIID
-database.ref('jukola_data').on('value', (snapshot) => {
-    const data = snapshot.val();
-    
-    if (data && data.users) {
-        db_users = data.users; // Hämta färska användare från Firebase
-    } else {
-        db_users = []; // Om databasen är helt tom
-    }
-    
-    // SPREKOFS-SÄKRING: Om en löpare är inloggad, synka deras lokala kryssboxar med molnet
-    if (currentUser) {
-        const foundMe = db_users.find(u => u.username === currentUser.username);
-        if (foundMe) {
-            currentUser = foundMe; // Nu har vi exakt rätt 'completed'-lista från molnet
-        }
-    }
-
-    // Rita om gränssnittet (Nu med keepOpen = true så att inte menyerna stängs när någon annan sparar!)
-    renderLeaderboard();
-    
-    if (currentUser) {
-        renderAllAccordions(true); 
-    }
-    
-    if (document.getElementById("admin-view") && document.getElementById("admin-view").style.display === "block") {
-        renderAdminUsers();
-    }
-});
-
 // --- INITIALISERA SIMULERAD DATABAS ---
 const defaultChallenges = [
     // --- 1 POÄNG ---
@@ -190,6 +145,51 @@ const db_challenges = defaultChallenges; // Använd alltid din fasta guldlista d
 let currentUser = null; 
 
 const positiveTiers = [1, 2, 3, 5, 10];
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBU3nCXEjnHGU-gl76NUEHyXeqG-gwRrgc",
+    authDomain: "jukola-poangjakt-2026.firebaseapp.com",
+    databaseURL: "https://jukola-poangjakt-2026-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "jukola-poangjakt-2026",
+    storageBucket: "jukola-poangjakt-2026.firebasestorage.app",
+    messagingSenderId: "106416764516",
+    appId: "1:106416764516:web:45cc663051ba6431029171"
+};
+
+// --- KORREKT INITIERING FÖR COMPAT-SKRIPTEN ---
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// 3. Lyssna på databasen i REALTIID
+database.ref('jukola_data').on('value', (snapshot) => {
+    const data = snapshot.val();
+    
+    if (data && data.users) {
+        db_users = data.users; // Hämta färska användare från Firebase
+    } else {
+        db_users = []; // Om databasen är helt tom
+    }
+    
+    // SPREKOFS-SÄKRING: Om en löpare är inloggad, synka deras lokala kryssboxar med molnet
+    if (currentUser) {
+        const foundMe = db_users.find(u => u.username === currentUser.username);
+        if (foundMe) {
+            currentUser = foundMe; // Nu har vi exakt rätt 'completed'-lista från molnet
+        }
+    }
+
+    // Rita om gränssnittet (Nu med keepOpen = true så att inte menyerna stängs när någon annan sparar!)
+    renderLeaderboard();
+    
+    if (currentUser) {
+        renderAllAccordions(true); 
+    }
+    
+    if (document.getElementById("admin-view") && document.getElementById("admin-view").style.display === "block") {
+        renderAdminUsers();
+    }
+});
 
 // --- VID START ---
 window.addEventListener("DOMContentLoaded", () => {
@@ -340,7 +340,7 @@ function renderAllAccordions(keepOpen = false) {
         listDiv.className = "challenge-list";
 
         tierChallenges.forEach(ch => {
-            const isChecked = currentUser.completed.includes(ch.id) ? "checked" : "";
+            const isChecked = (currentUser.completed || []).includes(ch.id) ? "checked" : "";
             itemHtml(ch, isChecked, listDiv);
         });
 
@@ -364,7 +364,7 @@ function renderAllAccordions(keepOpen = false) {
         listDiv.className = "challenge-list";
 
         firstChallenges.forEach(ch => {
-            const takenByUser = db_users.find(u => u.completed.includes(ch.id));
+            const takenByUser = db_users.find(u => (u.completed || []).includes(ch.id));
             
             let isChecked = "";
             let isDisabled = "";
@@ -413,7 +413,7 @@ function renderAllAccordions(keepOpen = false) {
         listDiv.className = "challenge-list";
 
         minusChallenges.forEach(ch => {
-            const isChecked = currentUser.completed.includes(ch.id) ? "checked" : "";
+            const isChecked = (currentUser.completed || []).includes(ch.id) ? "checked" : "";
             itemHtml(ch, isChecked, listDiv, true);
         });
         details.appendChild(listDiv);
