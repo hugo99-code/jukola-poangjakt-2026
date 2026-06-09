@@ -356,6 +356,8 @@ function renderAllAccordions(keepOpen = false) {
         const tierChallenges = db_challenges.filter(ch => ch.points === tier && !ch.isFirst);
         if (tierChallenges.length === 0) return;
 
+        tierChallenges.sort((a, b) => a.text.localeCompare(b.text, 'sv'));
+
         const details = document.createElement("details");
         details.setAttribute("data-tier", tier); // Sätt en etikett
         if (openTiers.includes(String(tier))) details.open = true; // Öppna om den var öppen innan!
@@ -383,6 +385,12 @@ function renderAllAccordions(keepOpen = false) {
     // --- 3. SPECIALMENY: FÖRST TILL KVARN!  ---
     const firstChallenges = db_challenges.filter(ch => ch.isFirst === true);
     if (firstChallenges.length > 0) {
+        firstChallenges.sort((a, b) => {
+            if (b.points !== a.points) {
+                return a.points - b.points; // Sortera på poäng först (lägst poäng först)
+            }
+            return a.text.localeCompare(b.text, 'sv'); // A-Ö om poängen är lika
+        });
         const details = document.createElement("details");
         details.className = "first-accordion";
         details.setAttribute("data-tier", "first"); // Sätt en etikett
@@ -434,7 +442,12 @@ function renderAllAccordions(keepOpen = false) {
     // --- 4. MINUS-MENY ---
     const minusChallenges = db_challenges.filter(ch => ch.points < 0 && !ch.isFirst);
     if (minusChallenges.length > 0) {
-        minusChallenges.sort((a, b) => b.points - a.points);
+        minusChallenges.sort((a, b) => {
+            if (b.points !== a.points) {
+                return b.points - a.points; // Minst minus överst (t.ex. -1p före -5p)
+            }
+            return a.text.localeCompare(b.text, 'sv'); // A-Ö om poängen är lika
+        });
         const details = document.createElement("details");
         details.className = "minus-accordion";
         details.setAttribute("data-tier", "minus"); // Sätt en etikett
