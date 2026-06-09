@@ -452,14 +452,19 @@ function toggleChallenge(id) {
 
 function renderLeaderboard() {
     const board = document.getElementById("leaderboard-body");
+    if (!board) return; // Säkerhetsspärr om elementet inte laddat än
     board.innerHTML = "";
 
     const scoreboard = db_users
         .filter(user => !user.isAdmin)
         .map(user => {
             let score = 0;
+            
+            // --- FIXEN: Skapa en säker referens till listan ---
+            const completedList = user.completed || []; 
+
             db_challenges.forEach(ch => {
-                if (user.completed.includes(ch.id)) {
+                if (completedList.includes(ch.id)) {
                     score += ch.points;
                 }
             });
