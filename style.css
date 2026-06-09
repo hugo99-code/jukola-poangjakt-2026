@@ -339,13 +339,21 @@ details.first-accordion summary::after {
     color: var(--highlight-color); /* Gör "[Tagen av X]" röd och tydlig */
 }
 
+/* Gör så att hela menyraden blir som ett gummiband */
+summary {
+    display: flex;
+    justify-content: space-between; /* Pushar texten till vänster och siffran till höger */
+    align-items: center; /* Centrerar dem snyggt i höjdled */
+    width: 100%; /* Tvingar raden att ta upp hela skärmbredden */
+}
+
+/* Din uppdaterade siffer-badge */
 .badge-count {
-    float: right;
-    margin-right: 2px;
     font-size: 0.85rem;
     color: #888;
     background: #e9ecef;
     padding: 2px 8px;
     border-radius: 12px;
     font-weight: bold;
+    margin-right: 5px; /* Justera denna lilla siffra om du vill ha den ännu närmare pilen */
 }
