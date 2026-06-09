@@ -435,19 +435,29 @@ function itemHtml(ch, isChecked, parentContainer, showPoints = false) {
 }
 
 function toggleChallenge(id) {
-    if (currentUser.completed.includes(id)) {
-        currentUser.completed = currentUser.completed.filter(chId => chId !== id);
-    } else {
-        currentUser.completed.push(id);
+    if (!currentUser) return;
+
+    // 1. SÄKRING: Se till att completed-listan existerar på den inloggade användaren
+    if (!currentUser.completed) {
+        currentUser.completed = [];
     }
-    
-    const userIndex = db_users.findIndex(u => u.username === currentUser.username);
-    db_users[userIndex].completed = currentUser.completed;
-    
+
+    // 2. Lägg till eller ta bort utmaningens ID från din lokala användare
+    const index = currentUser.completed.indexOf(id);
+    if (index > -1) {
+        currentUser.completed.splice(index, 1); // Ta bort om den redan var ikryssad
+    } else {
+        currentUser.completed.push(id); // Lägg till om den var tom
+    }
+
+    // 3. SYNKA TILL MOLNET: Hitta och uppdatera denna användare i den globala db_users-listan
+    const userIdx = db_users.findIndex(u => u.username === currentUser.username);
+    if (userIdx > -1) {
+        db_users[userIdx].completed = currentUser.completed;
+    }
+
+    // 4. Skicka upp den uppdaterade listan till Firebase!
     saveDB();
-    
-    renderAllAccordions(true); // TRUE = Behåll menyn öppen när man klickar i en ruta!
-    renderLeaderboard();
 }
 
 function renderLeaderboard() {
