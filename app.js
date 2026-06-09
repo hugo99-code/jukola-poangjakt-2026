@@ -141,7 +141,7 @@ const defaultChallenges = [
 
 // --- GLOBALA VARIABLER (Anpassade för Firebase) ---
 let db_users = []; 
-const db_challenges = defaultChallenges; // Använd alltid din fasta guldlista direkt!
+let db_challenges = defaultChallenges; // Använd alltid din fasta guldlista direkt!
 let currentUser = null; 
 
 const positiveTiers = [1, 2, 3, 5, 10];
@@ -161,25 +161,43 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+let initialLoadDone = false; // Håller koll på om det är första gången appen startar
+
 // 3. Lyssna på databasen i REALTIID
 database.ref('jukola_data').on('value', (snapshot) => {
     const data = snapshot.val();
     
     if (data && data.users) {
-        db_users = data.users; // Hämta färska användare från Firebase
+        db_users = data.users; 
     } else {
-        db_users = []; // Om databasen är helt tom
+        db_users = []; 
+    }
+
+    if (data && data.challenges) {
+        db_challenges = data.challenges;
+    } else {
+        db_challenges = defaultChallenges;
     }
     
-    // SPREKOFS-SÄKRING: Om en löpare är inloggad, synka deras lokala kryssboxar med molnet
-    if (currentUser) {
+    // --- AUTOMATISK INLOGGNING VID START ---
+    if (!initialLoadDone) {
+        const savedSession = JSON.parse(localStorage.getItem("current_session"));
+        if (savedSession) {
+            const foundMe = db_users.find(u => u.username === savedSession.username);
+            if (foundMe) {
+                currentUser = foundMe; // Logga in automatiskt med färsk molndata!
+                showGameView();
+            }
+        }
+        initialLoadDone = true; // Sätt flaggan till sant så vi inte kastar ut folk från admin-vyn sen!
+    } else if (currentUser) {
+        // Vanlig synk under spelets gång
         const foundMe = db_users.find(u => u.username === currentUser.username);
         if (foundMe) {
-            currentUser = foundMe; // Nu har vi exakt rätt 'completed'-lista från molnet
+            currentUser = foundMe; 
         }
     }
 
-    // Rita om gränssnittet (Nu med keepOpen = true så att inte menyerna stängs när någon annan sparar!)
     renderLeaderboard();
     
     if (currentUser) {
@@ -310,6 +328,7 @@ function logout() {
 // Lägg till (keepOpen = false) på raden nedanför:
 function renderAllAccordions(keepOpen = false) {
     const container = document.getElementById("accordion-container");
+    if (!currentUser) return;
 
     // Spara bara öppna menyer om keepOpen är sant (vilket det är när man klickar på en checkbox)
     const openTiers = [];
@@ -332,8 +351,12 @@ function renderAllAccordions(keepOpen = false) {
         details.setAttribute("data-tier", tier); // Sätt en etikett
         if (openTiers.includes(String(tier))) details.open = true; // Öppna om den var öppen innan!
 
+        // Räkna totalt och hur många användaren har klarat i just denna kategori
+        const totalInTier = tierChallenges.length;
+        const doneInTier = tierChallenges.filter(ch => (currentUser.completed || []).includes(ch.id)).length;
+
         const summary = document.createElement("summary");
-        summary.innerHTML = `<span>${tier} Poäng</span>`;
+        summary.innerHTML = `<span>${tier} Poäng</span> <span class="badge-count">${doneInTier}/${totalInTier}</span>`;
         details.appendChild(summary);
 
         const listDiv = document.createElement("div");
@@ -356,8 +379,11 @@ function renderAllAccordions(keepOpen = false) {
         details.setAttribute("data-tier", "first"); // Sätt en etikett
         if (openTiers.includes("first")) details.open = true; // Öppna om den var öppen innan!
         
+        const totalFirst = firstChallenges.length;
+        const doneFirst = firstChallenges.filter(ch => (currentUser.completed || []).includes(ch.id)).length;
+
         const summary = document.createElement("summary");
-        summary.innerHTML = `<span>Först till kvarn </span>`;
+        summary.innerHTML = `<span>Först till kvarn</span> <span class="badge-count">${doneFirst}/${totalFirst}</span>`;
         details.appendChild(summary);
 
         const listDiv = document.createElement("div");
@@ -405,8 +431,11 @@ function renderAllAccordions(keepOpen = false) {
         details.setAttribute("data-tier", "minus"); // Sätt en etikett
         if (openTiers.includes("minus")) details.open = true; // Öppna om den var öppen innan!
 
+        const totalMinus = minusChallenges.length;
+        const doneMinus = minusChallenges.filter(ch => (currentUser.completed || []).includes(ch.id)).length;
+
         const summary = document.createElement("summary");
-        summary.innerHTML = `<span>Minuspoäng </span>`;
+        summary.innerHTML = `<span>Minuspoäng</span> <span class="badge-count">${doneMinus}/${totalMinus}</span>`;
         details.appendChild(summary);
 
         const listDiv = document.createElement("div");
@@ -507,11 +536,14 @@ function addChallengeFromAdmin() {
         text: textIn
     };
 
+    // 1. Lägg till i den lokala listan
     db_challenges.push(newCh);
-    localStorage.setItem("db_challenges_v3", JSON.stringify(db_challenges));
+    
+    // 2. FIXEN: Spara till Firebase (inte localStorage!) så alla löpare får den direkt
+    saveDB(); 
     
     document.getElementById("new-ch-text").value = "";
-    alert("Utmaning tillagd!");
+    alert("Utmaning tillagd för alla löpare!");
 }
 
 function renderAdminUsers() {
@@ -535,9 +567,10 @@ function renderAdminUsers() {
 }
 
 function saveDB() {
-    // Sparar hela användarlistan till Firebase i mappen 'jukola_data'
+    // FIXEN: Sparar BÅDE användare och utmaningar till Firebase
     database.ref('jukola_data').set({
-        users: db_users
+        users: db_users,
+        challenges: db_challenges // Skicka med denna rad!
     });
 }
 
