@@ -11,7 +11,7 @@
     --secondary-color: #005192; 
     
     /* Klarröd: Högkontrast (minuspoäng, felmeddelanden, avbryt) */
-    --highlight-color: #c0392b; 
+    --highlight-color: #cc0000; 
     
     --border-radius: 12px;
 }
@@ -296,15 +296,15 @@ tr:nth-child(3) td:first-child { color: #cd7f32; font-weight: bold; }
 
 /* --- SPECIFIK STYLING FÖR MINUSPOÄNG --- */
 details.minus-accordion[open] summary {
-    color: #c0392b; /* Fixat: Solid mörkröd istället för variabeln som blev rosa */
+    color: #cc0000; /* Fixat: Solid mörkröd istället för variabeln som blev rosa */
 }
 
 details.minus-accordion summary::after {
-    color: #c0392b; /* Matchar texten på pilen */
+    color: #cc0000; /* Matchar texten på pilen */
 }
 
 .minus-badge {
-    color: #c0392b; /* Fixat: Gör siffran [-1p] ordentligt röd */
+    color: #cc0000; /* Fixat: Gör siffran [-1p] ordentligt röd */
     font-weight: bold;
     margin-right: 5px;
 }
