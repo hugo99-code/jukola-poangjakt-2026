@@ -18,27 +18,24 @@ database.ref('jukola_data').on('value', (snapshot) => {
     const data = snapshot.val();
     
     if (data && data.users) {
-        db_users = data.users; // Hämta användarna från molnet
+        db_users = data.users; // Hämta färska användare från Firebase
     } else {
-        db_users = []; 
+        db_users = []; // Om databasen är helt tom
     }
     
-    // --- LÖSNINGEN: Säkerställ att appen vet vem som är inloggad ---
-    // Om du har en global variabel som sparar den inloggade användaren (t.ex. currentUser)
-    if (typeof currentUser !== 'undefined' && currentUser) {
-        // Hitta den uppdaterade versionen av den inloggade användaren från molndatan
-        const updatedMe = db_users.find(u => u.username === currentUser.username);
-        if (updatedMe) {
-            currentUser = updatedMe; // Synka dina lokala kryssboxar med molnet
+    // SPREKOFS-SÄKRING: Om en löpare är inloggad, synka deras lokala kryssboxar med molnet
+    if (currentUser) {
+        const foundMe = db_users.find(u => u.username === currentUser.username);
+        if (foundMe) {
+            currentUser = foundMe; // Nu har vi exakt rätt 'completed'-lista från molnet
         }
     }
 
-    // Rita om skärmen i exakt denna ordning
+    // Rita om gränssnittet (Nu med keepOpen = true så att inte menyerna stängs när någon annan sparar!)
     renderLeaderboard();
     
-    if (typeof currentUser !== 'undefined' && currentUser) {
-        // Tvinga appen att rita ut utmaningarna baserat på din fasta defaultChallenges-lista
-        renderChallenges(); 
+    if (currentUser) {
+        renderAllAccordions(true); 
     }
     
     if (document.getElementById("admin-view") && document.getElementById("admin-view").style.display === "block") {
@@ -187,13 +184,11 @@ const defaultChallenges = [
     { id: "m15", points: -10, text: "Spy i bussen, på båten eller annan plats inomhus" }
 ];
 
-let db_users = JSON.parse(localStorage.getItem("db_users")) || [];
-let db_challenges = JSON.parse(localStorage.getItem("db_challenges_v3")) || defaultChallenges;
-if (!localStorage.getItem("db_challenges_v3")) {
-    localStorage.setItem("db_challenges_v3", JSON.stringify(db_challenges));
-}
+// --- GLOBALA VARIABLER (Anpassade för Firebase) ---
+let db_users = []; 
+const db_challenges = defaultChallenges; // Använd alltid din fasta guldlista direkt!
+let currentUser = null; 
 
-let currentUser = JSON.parse(localStorage.getItem("current_session")) || null;
 const positiveTiers = [1, 2, 3, 5, 10];
 
 // --- VID START ---
