@@ -355,5 +355,5 @@ summary {
     padding: 2px 8px;
     border-radius: 12px;
     font-weight: bold;
-    margin-right: 5px; /* Justera denna lilla siffra om du vill ha den ännu närmare pilen */
+    margin-right: 1px; /* Justera denna lilla siffra om du vill ha den ännu närmare pilen */
 }
