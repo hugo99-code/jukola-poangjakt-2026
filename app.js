@@ -282,17 +282,26 @@ function handleSelfReset() {
         return;
     }
 
+    // --- SÄKERHETSSPÄRR: Freda admin-kontot från kapning ---
+    if (usernameIn.toLowerCase() === 'admin') {
+        messageText.style.color = "#e74c3c"; // Röd text för felmeddelande
+        messageText.innerText = "Admin-lösenordet kan inte ändras härifrån!";
+        return;
+    }
+
     const userIndex = db_users.findIndex(u => u.username.toLowerCase() === usernameIn.toLowerCase());
 
     if (userIndex === -1) {
+        messageText.style.color = "#e74c3c";
         messageText.innerText = `Hittade ingen löpare med namnet "${usernameIn}"`;
         return;
     }
 
+    // Uppdatera lösenordet för vanliga löpare
     db_users[userIndex].password = newPasswordIn;
     saveDB();
 
-    messageText.style.color = "#2ecc71";
+    messageText.style.color = "#2ecc71"; // Grön text för succé
     messageText.innerText = "Lösenordet har uppdaterats framgångsrikt!";
 
     setTimeout(() => {
