@@ -545,7 +545,9 @@ function renderLeaderboard() {
         board.innerHTML += `
             <tr>
                 <td>${index + 1}</td>
-                <td>${player.name}</td>
+                <td onclick="openUserModal('${player.name}')" style="cursor: pointer; font-weight: bold; color: var(--primary-color);">
+                    ${player.name}
+                </td>
                 <td><strong>${player.points} p</strong></td>
             </tr>
         `;
@@ -725,3 +727,86 @@ function renderSearch(query) {
     // Visa rutan
     searchDropdown.classList.add("active");
 }
+
+// ÖPPNA POPUP OCH VISA EN SPECIFIK LÖPARES UTMANINGAR
+function openUserModal(username) {
+    const targetUser = db_users.find(u => u.username.toLowerCase() === username.toLowerCase());
+    if (!targetUser) return;
+
+    // Sätt rubriken till löparens namn
+    document.getElementById("modal-user-title").innerText = `${targetUser.username}s utmaningar`;
+
+    const listContainer = document.getElementById("modal-challenges-list");
+    listContainer.innerHTML = ""; // Töm listan innan vi bygger den
+
+    // Hämta alla utmaningar som denna användare har klarat
+    const completedIDs = targetUser.completed || [];
+    let userChallenges = db_challenges.filter(ch => completedIDs.includes(ch.id));
+
+    if (userChallenges.length === 0) {
+        listContainer.innerHTML = `<div style="color: #888; text-align: center; padding: 20px;">Inga utmaningar avklarade ännu! 🏃‍♂️</div>`;
+        document.getElementById("user-modal").classList.add("active");
+        return;
+    }
+
+    // 🔥 TRIPPELSORTERINGEN (Låg -> hög, vanliga -> först till kvarn -> minus, A-Ö)
+    userChallenges.sort((a, b) => {
+        const getGroupWeight = (ch) => {
+            if (ch.points < 0 && !ch.isFirst) return 3; // Minus sist
+            if (ch.isFirst) return 2;                   // Först till kvarn i mitten
+            return 1;                                   // Vanliga först
+        };
+
+        const weightA = getGroupWeight(a);
+        const weightB = getGroupWeight(b);
+
+        if (weightA !== weightB) return weightA - weightB;
+
+        if (a.points !== b.points) {
+            if (weightA === 3) {
+                return b.points - a.points; // Minus: -1p före -5p
+            } else {
+                return a.points - b.points; // Plus: 1p före 5p
+            }
+        }
+        return a.text.localeCompare(b.text, 'sv');
+    });
+
+    // Skriv ut utmaningarna i popupen
+    userChallenges.forEach(ch => {
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "modal-item";
+
+        let prefix = ch.points < 0 ? `[${ch.points}p]` : `[+${ch.points}p]`;
+        const badgeColor = ch.points < 0 ? "var(--highlight-color)" : "var(--primary-color)";
+
+        // Eftersom vi bara TITTAR på någon annans lista ritar vi bara ut text (inga checkboxar)
+        itemDiv.innerHTML = `
+            <span>
+                <strong style="color: ${badgeColor}; margin-right: 8px;">${prefix}</strong> 
+                ✅ ${ch.text}
+            </span>
+        `;
+        listContainer.appendChild(itemDiv);
+    });
+
+    // Visa hela popupen genom att lägga till klassen .active
+    document.getElementById("user-modal").classList.add("active");
+}
+
+// STÄNG POPUPEN
+function closeUserModal() {
+    document.getElementById("user-modal").classList.remove("active");
+}
+
+// Stäng om man klickar på den mörka bakgrunden utanför den vita rutan
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("user-modal");
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                closeUserModal();
+            }
+        });
+    }
+});
