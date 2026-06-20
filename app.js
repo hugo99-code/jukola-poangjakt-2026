@@ -31,6 +31,9 @@ const defaultChallenges = [
     { id: "ett28", points: 1, text: "Ropa ut en kodsiffra på finska under din sträcka" },
     { id: "ett29", points: 1, text: "Ladda upp ditt lopp på både Strava och Livelox" },
     { id: "ett30", points: 1, text: "Ge 10 kudos till andras Jukolalopp" },
+    { id: "ett31", points: 1, text: "Basta med minst 2 klubbkamrater" },
+    { id: "ett32", points: 1, text: "Kör \"en bro\" på bussresan hem" },
+    { id: "ett33", points: 1, text: "Ta in placeringar på spurten" },
     // --- 2 POÄNG ---
     { id: "två1", points: 2, text: "Använd dina egna medhavda säkerhetsnålar" },
     { id: "två2", points: 2, text: "Bär någon annans väska från bussen till arenan" },
@@ -57,6 +60,8 @@ const defaultChallenges = [
     { id: "två23", points: 2, text: "Snabbast spurt i laget" },
     { id: "två24", points: 2, text: "Lägg ut ett Instagraminlägg om Jukolaresan" },
     { id: "två25", points: 2, text: "Hjälp till att plocka och packa ned klubbens tält" },
+    { id: "två26", points: 2, text: "Skriv ett Jukola-rim och läs upp det för klubben" },
+    { id: "två27", points: 2, text: "Bjud bastuvedkastaren på öl" },
     // --- 3 POÄNG ---
     { id: "tre1", points: 3, text: "Basta 2 gånger med minst 1 timmes mellanrum" },
     { id: "tre2", points: 3, text: "Drick ett glas av varje alkoholhaltig dryck på buffén" },
@@ -78,6 +83,8 @@ const defaultChallenges = [
     { id: "tre18", points: 3, text: "Plocka >100 placeringar" },
     { id: "tre19", points: 3, text: "Samla ihop totalt antal kudos som matchar hälften av dina följare" },
     { id: "tre20", points: 3, text: "Ta en selfie med en Jukolavinnare" },
+    { id: "tre21", points: 3, text: "Bli väckt av städerskan på båten" },
+    { id: "tre22", points: 3, text: "Logga 5 nya öl på untapped" },
     // --- 5 POÄNG ---
     { id: "fem1", points: 5, text: "Besök Sapokka vattenpark" },
     { id: "fem2", points: 5, text: "Ditt lag slår förväntad slutposition" },
