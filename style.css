@@ -458,9 +458,7 @@ summary {
 
 /* Headern inuti popupen */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative; /* Gör att vi kan fixera krysset fritt här i */
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
 }
@@ -469,10 +467,14 @@ summary {
     margin: 0;
     font-size: 1.3rem;
     color: var(--secondary-color);
+    padding-right: 35px; /* Säkerhetsmarginal så långa namn aldrig krockar med krysset */
 }
 
-/* Stängknappen (X) */
+/* Stängknappen (X) - Nu fixerad i hörnet! */
 .modal-close-btn {
+    position: absolute; /* Lyfter ut krysset så det inte knuffar texten */
+    top: 10px;          /* Trycker upp det till det absoluta översta hörnet */
+    right: 15px;        /* Drar ut det till högerkanten */
     background: none;
     border: none;
     font-size: 2rem;

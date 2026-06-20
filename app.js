@@ -777,14 +777,14 @@ function openUserModal(username) {
         const itemDiv = document.createElement("div");
         itemDiv.className = "modal-item";
 
-        let prefix = ch.points < 0 ? `[${ch.points}p]` : `[+${ch.points}p]`;
+        let prefix = `${ch.points}p`;
         const badgeColor = ch.points < 0 ? "var(--highlight-color)" : "var(--primary-color)";
 
         // Eftersom vi bara TITTAR på någon annans lista ritar vi bara ut text (inga checkboxar)
         itemDiv.innerHTML = `
             <span>
                 <strong style="color: ${badgeColor}; margin-right: 8px;">${prefix}</strong> 
-                ✅ ${ch.text}
+                ${ch.text}
             </span>
         `;
         listContainer.appendChild(itemDiv);
