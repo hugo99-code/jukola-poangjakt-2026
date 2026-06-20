@@ -780,11 +780,13 @@ function openUserModal(username) {
         let prefix = `${ch.points}p`;
         const badgeColor = ch.points < 0 ? "var(--highlight-color)" : "var(--primary-color)";
 
+        let ftkLabel = ch.isFirst ? " <strong>(FTK)</strong>" : "";
+
         // Eftersom vi bara TITTAR på någon annans lista ritar vi bara ut text (inga checkboxar)
         itemDiv.innerHTML = `
             <span>
                 <strong style="color: ${badgeColor}; margin-right: 8px;">${prefix}</strong> 
-                ${ch.text}
+                ${ch.text}${ftkLabel}
             </span>
         `;
         listContainer.appendChild(itemDiv);
