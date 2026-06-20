@@ -361,3 +361,56 @@ summary {
     font-weight: bold;
     margin-right: 1px; /* Justera denna lilla siffra om du vill ha den ännu närmare pilen */
 }
+
+/* Själva behållaren runt sökfältet */
+.search-container {
+    position: relative;
+    margin: 15px 0;
+    width: 100%;
+}
+
+/* Sökfältet */
+#search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#search-input:focus {
+    border-color: var(--primary-color);
+}
+
+/* Rullgardinen som hänger ner */
+.search-dropdown {
+    position: absolute;
+    top: 100%; /* Placerar den precis under sökfältet */
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 0 0 12px 12px; /* Runda hörn bara i botten */
+    max-height: 250px; /* Tvingar rutan att inte ta upp hela skärmen */
+    overflow-y: auto; /* Gör rutan skrollbar om det är många resultat */
+    z-index: 1000; /* Lägger den OVANPÅ alla menyer */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    display: none; /* Dold som standard */
+}
+
+/* Visas när man söker eller klickar */
+.search-dropdown.active {
+    display: block;
+}
+
+/* Snygga till utmaningarna inuti sökresultatet */
+.search-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}

@@ -612,3 +612,109 @@ function deleteUser(username) {
         renderLeaderboard();
     }
 }
+
+// Initiera sökfunktionen (Kör denna t.ex. när appen startar / i din setup-kod)
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search-input");
+    const searchDropdown = document.getElementById("search-results");
+
+    if (!searchInput) return;
+
+    // 1. När man klickar i sökfältet - Visa alla utmaningar direkt
+    searchInput.addEventListener("focus", () => {
+        renderSearch(searchInput.value);
+    });
+
+    // 2. När man skriver i sökfältet - Filtrera i realtid
+    searchInput.addEventListener("input", () => {
+        renderSearch(searchInput.value);
+    });
+
+    // 3. Stäng rutan om man klickar utanför sökfälts-området
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".search-container")) {
+            searchDropdown.classList.remove("active");
+        }
+    });
+});
+
+function renderSearch(query) {
+    const searchDropdown = document.getElementById("search-results");
+    searchDropdown.innerHTML = ""; // Töm rutan
+
+    const term = query.trim().toLowerCase();
+
+    // Filtrera: Visa alla om fältet är tomt, annars bara de som matchar texten
+    let filtered = db_challenges.filter(ch => ch.text.toLowerCase().includes(term));
+
+    if (filtered.length === 0) {
+        searchDropdown.innerHTML = `<div class="search-item" style="color: #888;">Inga utmaningar matchar "${query}"</div>`;
+        searchDropdown.classList.add("active");
+        return;
+    }
+
+    // 🔥 STRUKTURERAD DUBBELSORTERING ENLIGT DINA ÖNSKEMÅL:
+    filtered.sort((a, b) => {
+        // Regel 1: Dela upp i kategorier (Vanliga = 1, Först till kvarn = 2, Minus = 3)
+        const getGroupWeight = (ch) => {
+            if (ch.points < 0 && !ch.isFirst) return 3; // Minus sist
+            if (ch.isFirst) return 2;                   // Först till kvarn i mitten
+            return 1;                                   // Vanliga först
+        };
+
+        const weightA = getGroupWeight(a);
+        const weightB = getGroupWeight(b);
+
+        if (weightA !== weightB) {
+            return weightA - weightB; // Skickar grupp 1 först, sen 2, sen 3
+        }
+
+        // Regel 2: Sortera efter poäng inom samma kategori (Lägst poäng överst)
+        if (a.points !== b.points) {
+            if (weightA === 3) {
+                return b.points - a.points; // För minus: ger -1p före -5p (snällast överst)
+            } else {
+                return a.points - b.points; // För plus: ger 1p före 5p (lägst poäng överst)
+            }
+        }
+
+        // Regel 3: Sortera i bokstavsordning (A-Ö) om poängen är exakt lika
+        return a.text.localeCompare(b.text, 'sv');
+    });
+
+    // Rita ut resultaten (Samma snygga HTML-utskrift som innan)
+    filtered.forEach(ch => {
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "search-item challenge-item";
+
+        const takenByUser = db_users.find(u => (u.completed || []).includes(ch.id));
+        let isChecked = "";
+        let isDisabled = "";
+        let prefix = ch.points < 0 ? `[${ch.points}p]` : `[+${ch.points}p]`;
+
+        if (takenByUser) {
+            if (takenByUser.username === currentUser.username) {
+                isChecked = "checked";
+            } else if (ch.isFirst) {
+                isDisabled = "disabled";
+                prefix = `❌ [Tagen av ${takenByUser.username}]`;
+                itemDiv.classList.add("taken");
+            }
+        }
+
+        const badgeColor = ch.points < 0 ? "var(--highlight-color)" : "var(--primary-color)";
+
+        itemDiv.innerHTML = `
+            <label style="display: flex; align-items: center; width: 100%;">
+                <input type="checkbox" ${isChecked} ${isDisabled} onchange="toggleChallenge('${ch.id}')">
+                <span style="margin-left: 10px;">
+                    <strong style="color: ${badgeColor};">${prefix}</strong> ${ch.text}
+                </span>
+            </label>
+        `;
+        searchDropdown.appendChild(itemDiv);
+    });
+
+    // Visa rutan
+    searchDropdown.classList.add("active");
+}
