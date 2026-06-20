@@ -744,7 +744,7 @@ function openUserModal(username) {
     let userChallenges = db_challenges.filter(ch => completedIDs.includes(ch.id));
 
     if (userChallenges.length === 0) {
-        listContainer.innerHTML = `<div style="color: #888; text-align: center; padding: 20px;">Inga utmaningar avklarade ännu! 🏃‍♂️</div>`;
+        listContainer.innerHTML = `<div style="color: #888; text-align: center; padding: 20px;">Inga utmaningar avklarade ännu</div>`;
         document.getElementById("user-modal").classList.add("active");
         return;
     }

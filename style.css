@@ -440,6 +440,7 @@ summary {
 
 /* Själva det vita kortet i mitten */
 .modal-content {
+    position: relative;
     background-color: #ffffff;
     width: 100%;
     max-width: 450px; /* Perfekt mobilbredd */
@@ -473,15 +474,20 @@ summary {
 /* Stängknappen (X) - Nu fixerad i hörnet! */
 .modal-close-btn {
     position: absolute; /* Lyfter ut krysset så det inte knuffar texten */
-    top: 10px;          /* Trycker upp det till det absoluta översta hörnet */
-    right: 15px;        /* Drar ut det till högerkanten */
+    top: 8px;          /* Trycker upp det till det absoluta översta hörnet */
+    right: 12px;        /* Drar ut det till högerkanten */
     background: none;
     border: none;
     font-size: 2rem;
     color: #888;
     cursor: pointer;
     padding: 0;
-    line-height: 1;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; /* Ligger ovanpå headern så det alltid är klickbart */
 }
 
 .modal-close-btn:hover {
