@@ -539,7 +539,7 @@ function renderLeaderboard() {
             return { name: user.username, points: score };
         });
 
-    // 🔥 UPPDATERAD SORTERING: Högst poäng först, men bokstavsordning (A-Ö) vid lika poäng
+    // Sortering: Högst poäng först, bokstavsordning vid lika
     scoreboard.sort((a, b) => {
         if (b.points !== a.points) {
             return b.points - a.points;
@@ -547,22 +547,29 @@ function renderLeaderboard() {
         return a.name.localeCompare(b.name, 'sv');
     });
 
-    // 🔥 LOGIK FÖR DELAD PLACERING
     let currentPosition = 1;
     let previousPoints = null;
 
     scoreboard.forEach((player, index) => {
-        // Om spelarens poäng INTE är samma som förra spelarens poäng...
         if (player.points !== previousPoints) {
-            // ...sätt placeringen till nuvarande index + 1 (t.ex. 1, 2, 3, 5...)
             currentPosition = index + 1;
         }
-        // Kom ihåg denna spelares poäng till nästa varv i loopen
         previousPoints = player.points;
+
+        // 🔥 BESTÄM MEDALJFÄRG BASERAT PÅ POSITION (INTE INDEX)
+        let positionContent = currentPosition; // Standard: Visa bara siffran
+        
+        if (currentPosition === 1) {
+            positionContent = `<span class="rank-badge gold-medal">1</span>`;
+        } else if (currentPosition === 2) {
+            positionContent = `<span class="rank-badge silver-medal">2</span>`;
+        } else if (currentPosition === 3) {
+            positionContent = `<span class="rank-badge bronze-medal">3</span>`;
+        }
 
         board.innerHTML += `
             <tr>
-                <td>${currentPosition}</td>
+                <td style="text-align: center; width: 50px;">${positionContent}</td>
                 <td onclick="openUserModal('${player.name}')" style="cursor: pointer; font-weight: bold; color: var(--primary-color);">
                     ${player.name}
                 </td>

@@ -513,3 +513,31 @@ summary {
 .modal-item:last-child {
     border-bottom: none;
 }
+
+/* Medalj-brickor för topp 3 */
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.gold-medal {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+    box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4);
+}
+
+.silver-medal {
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    box-shadow: 0 2px 5px rgba(189, 195, 199, 0.4);
+}
+
+.bronze-medal {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    box-shadow: 0 2px 5px rgba(230, 126, 34, 0.4);
+}
