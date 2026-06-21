@@ -525,19 +525,23 @@ summary {
     font-weight: bold;
     color: #ffffff;
     font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .gold-medal {
-    background: linear-gradient(135deg, #f1c40f, #f39c12);
-    box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4);
+    background: #ffca28;
+    color: #1a1a1a;
+    box-shadow: 0 0 8px rgba(255, 202, 40, 0.3);
 }
 
 .silver-medal {
-    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
-    box-shadow: 0 2px 5px rgba(189, 195, 199, 0.4);
+    background: #e0e0e0;
+    color: #1a1a1a;
+    box-shadow: 0 0 8px rgba(224, 224, 224, 0.2);
 }
 
 .bronze-medal {
-    background: linear-gradient(135deg, #e67e22, #d35400);
-    box-shadow: 0 2px 5px rgba(230, 126, 34, 0.4);
+    background: #b07d62;
+    color: #ffffff;
+    box-shadow: 0 0 8px rgba(176, 125, 98, 0.2);
 }
