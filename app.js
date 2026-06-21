@@ -539,12 +539,30 @@ function renderLeaderboard() {
             return { name: user.username, points: score };
         });
 
-    scoreboard.sort((a, b) => b.points - a.points);
+    // 🔥 UPPDATERAD SORTERING: Högst poäng först, men bokstavsordning (A-Ö) vid lika poäng
+    scoreboard.sort((a, b) => {
+        if (b.points !== a.points) {
+            return b.points - a.points;
+        }
+        return a.name.localeCompare(b.name, 'sv');
+    });
+
+    // 🔥 LOGIK FÖR DELAD PLACERING
+    let currentPosition = 1;
+    let previousPoints = null;
 
     scoreboard.forEach((player, index) => {
+        // Om spelarens poäng INTE är samma som förra spelarens poäng...
+        if (player.points !== previousPoints) {
+            // ...sätt placeringen till nuvarande index + 1 (t.ex. 1, 2, 3, 5...)
+            currentPosition = index + 1;
+        }
+        // Kom ihåg denna spelares poäng till nästa varv i loopen
+        previousPoints = player.points;
+
         board.innerHTML += `
             <tr>
-                <td>${index + 1}</td>
+                <td>${currentPosition}</td>
                 <td onclick="openUserModal('${player.name}')" style="cursor: pointer; font-weight: bold; color: var(--primary-color);">
                     ${player.name}
                 </td>
