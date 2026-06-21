@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jukola Poängjakt 2026</title>
+    <title>Poängjakt</title>
     <link rel="stylesheet" href="style.css?v=10">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
     <section id="login-view" class="view">
-        <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img"> <div class="login-card">
-            <h1>Jukolaspelet 2026 </h1>
+        <div class="login-card">
+            <h1>Poängjakt</h1>
             <h2>Logga in eller Skapa konto</h2>
             <div class="input-group">
                 <input type="text" id="username-input" placeholder="Användarnamn">
@@ -39,7 +39,7 @@
     </section>
 
     <section id="reset-view" class="view hidden">
-        <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img"> <div class="login-card">
+        <div class="login-card">
             <h1>Byt Lösenord </h1>
             <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Skriv in ditt exakta användarnamn och ditt nya önskade lösenord.</p>
             <div class="input-group">
@@ -55,12 +55,10 @@
     <section id="game-view" class="view hidden">
         <header>
             <div class="header-left">
-                <h1>Jukolaspelet 2026 </h1>
+                <h1>Poängjakt</h1>
                 <p id="welcome-text">Laddar löpare...</p>
                 <button onclick="logout()" class="btn-link-white">Logga ut</button>
             </div>
-            
-            <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img">
             
             <button id="admin-nav-btn" class="btn-admin-nav hidden" onclick="switchView('admin-view')">⚙️ Adminpanelen</button>
         </header>
@@ -101,7 +99,6 @@
                 <h1>Adminpanelen</h1>
                 <button onclick="switchView('game-view')" class="btn-link-white">◀ Tillbaka till spelet</button>
             </div>
-            <img src="image_0.png" alt="OK Södertörn Logotyp" class="logo-img">
         </header>
 
         <main>
